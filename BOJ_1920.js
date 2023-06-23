@@ -1,46 +1,42 @@
 /*
 BOJ_1920 (수 찾기)
 */
-let fs = require('fs');
-/*
-let input = fs.readFileSync('/dev/stdin').toString().split('\n');
+const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin').toString().split('\n');
+//const input = fs.readFileSync('./tc').toString().split('\n');
 
-// n배열에 m배열의 요소가 포함되는지 확인
-let cntn = input.shift();
-let n = input.shift().split(' ').map(n => parseInt(n));
-let cntm = input.shift();
-let m = input.shift().split(' ').map(m => parseInt(m));
-*/
-let cntn = 5;
-let n = [4, 1, 5, 2, 3];
-let cntm = 5;
-let m = [1, 3, 7, 9, 5];
+const cntn = input.shift();
+const n = input.shift().split(' ').map(n => parseInt(n));
+const cntm = input.shift();
+const m = input.shift().split(' ').map(m => parseInt(m));
+//const no = [...n];
 let k = [];
 
 // 비교 함수를 이용한 오름차순 정렬
-[n, m].forEach((arr) => {
-    arr.sort((a, b) => {
-        return a - b;
-    });
+n.sort((a, b) => {
+    return a - b;
 });
 
-function binSearch(arr, trgt) {
-    let mid = Math.trunc(arr.length / 2); // 중앙 인덱스
-    let comp = arr[mid] < trgt; // 비교 결과
+function binSearch(arr, trgt, left, right) {
+    const range = right - left;
+    const mid = left + Math.trunc(range / 2); // 중앙 인덱스
+    const comp = arr[mid] < trgt; // 비교 결과
 
     if(arr[mid] == trgt) return true; // 발견 ㄴㅇㄱ
+    if(range == 0) return false; // 탐색 구간 없음
 
     if(comp) { // m의 후반부에서 탐색
-        let r = binSearch(arr.slice(mid), trgt);
-        return r;
+        return binSearch(arr, trgt, mid + 1, right);
     } else { // m의 전반부에서 탐색
-        let r = binSearch(arr.slice(0, mid), trgt);
-        return r;
+        return binSearch(arr, trgt, 0, mid - 1);
     }
-
-    return false;
 }
 
 for(let i = 0; i < cntm; i++) {
-    console.log(binSearch(n, m[i]) ? 1 : 0);
-}
+    if(k[m[i]]) {
+        console.log(1);
+    } else {
+        k[m[i]] = binSearch(n, m[i], 0, n.length - 1) ? 1 : 0;
+        console.log(k[m[i]]);
+    }
+};
